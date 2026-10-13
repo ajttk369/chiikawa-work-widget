@@ -2,6 +2,8 @@
 
 치이카와·하치와레·우사기가 걷고 쉬며, 업무 일정에 맞춰 점심을 먹고 퇴근 인사를 하는 생활형 위젯입니다. Windows용 Electron 앱과 브라우저에서 사용하는 웹 버전을 함께 제공합니다.
 
+![먼작귀 업무시간 위젯 미리보기](./docs/screenshots/widget-preview.png)
+
 ## 제공 형태
 
 - **Windows 앱:** 독립된 창, 항상 위에 표시, 클릭 통과, 트레이 숨김·복원·종료를 지원합니다. 설치 파일로 배포하면 사용자에게 Node.js가 필요하지 않습니다.
@@ -90,6 +92,7 @@ GitHub 저장소를 Vercel에서 Import합니다. 웹 배포 설정은 루트의
 
 ```text
 assets/                 배경·캐릭터·음식·아이콘과 아이콘 원본
+docs/screenshots/       README 화면 캡처
 renderer/               Windows와 웹이 공유하는 화면·스타일·동작
 web/                    브라우저 상태 저장·설정 대화상자
 scripts/                웹 실행·배포 파일 생성·아이콘 변환
