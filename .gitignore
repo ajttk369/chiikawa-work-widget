@@ -1,6 +1,30 @@
+# Dependencies and generated output
 node_modules/
-*.log
 dist/
+out/
+release/
+artifacts/
+coverage/
 .vercel/
+
+# Local configuration and temporary files
 .env
 .env.*
+!.env.example
+.cache/
+.tmp/
+tmp/
+temp/
+*.log
+*.tmp
+*.bak
+*.tsbuildinfo
+
+# Installers are attached to GitHub Releases, not committed
+*.exe
+*.blockmap
+
+# Operating system metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
