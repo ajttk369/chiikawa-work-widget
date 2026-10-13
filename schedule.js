@@ -3,7 +3,7 @@
 const DEFAULTS = Object.freeze({ start: '09:00', lunchStart: '12:00', lunchEnd: '13:00', end: '18:00',
   workdays: [1, 2, 3, 4, 5], sound: false, size: 116, pin: false,
   mini: false, ambient: true, breakEnabled: false, breakMinutes: 60,
-  clickThrough: false, opacity: 100, background: 'auto' });
+  clickThrough: false, opacity: 100, background: 'auto', characters: Object.freeze(['chiikawa', 'hachiware', 'usagi']) });
 const MENUS = ['주먹밥', '옥수수', '카레라이스', '라멘', '도시락', '샌드위치'];
 const minutes = value => Number(value.slice(0, 2)) * 60 + Number(value.slice(3));
 const dayKey = date => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
@@ -35,9 +35,12 @@ function validateSettings(input) {
   if (![30, 45, 60, 90, 120].includes(extra.breakMinutes)) throw new Error('휴식 알림 간격을 확인해주세요.');
   if (!Number.isFinite(extra.opacity) || extra.opacity < 40 || extra.opacity > 100) throw new Error('불투명도는 40~100으로 설정해주세요.');
   if (!['auto', 'day', 'sunset', 'night'].includes(extra.background)) throw new Error('배경 종류를 확인해주세요.');
+  const characters = input.characters ?? DEFAULTS.characters;
+  if (!Array.isArray(characters) || characters.length < 1 || characters.length > 3 || new Set(characters).size !== characters.length ||
+      characters.some(id => !['chiikawa', 'hachiware', 'usagi', 'momonga'].includes(id))) throw new Error('친구를 중복 없이 1~3명 선택해주세요.');
   extra.opacity = Math.round(extra.opacity);
   return { start: input.start, end: input.end, lunchStart: input.lunchStart, lunchEnd: input.lunchEnd,
-    workdays: [...new Set(input.workdays)].sort(), sound: input.sound, size: Math.round(input.size), pin: input.pin, ...extra };
+    workdays: [...new Set(input.workdays)].sort(), sound: input.sound, size: Math.round(input.size), pin: input.pin, ...extra, characters: [...characters] };
 }
 function timeline(settings, now = Date.now()) {
   const today = new Date(now), yesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1);

@@ -4,14 +4,15 @@ const path = require('node:path');
 const { fileURLToPath, pathToFileURL } = require('node:url');
 const { randomInt } = require('node:crypto');
 const { DEFAULTS, MENUS, validateSettings, timeline } = require('./schedule.cjs');
+const { createUpdater } = require('./updater.cjs');
 const ROOT = __dirname, RENDERER = path.join(ROOT, 'renderer');
-let widgetWindow, settingsWindow, widgetIcon, artwork, tray, state, file, lastTimeline, preview = null, reminder = null, quitting = false, saveTimer, storageError = '';
+let widgetWindow, settingsWindow, widgetIcon, artwork, tray, state, file, lastTimeline, updates, preview = null, reminder = null, quitting = false, saveTimer, storageError = '';
 app.setName('먼작귀');
 if (process.platform === 'win32') app.setAppUserModelId('com.ajttk369.chiikawaworkwidget');
 if (!app.requestSingleInstanceLock()) app.quit();
 else {
   app.on('second-instance', () => showWidget());
-  app.on('before-quit', () => { quitting = true; rememberBounds(); persist(); });
+  app.on('before-quit', () => { quitting = true; updates?.dispose(); rememberBounds(); persist(); });
   app.on('window-all-closed', () => {});
   app.whenReady().then(start).catch(error => { dialog.showErrorBox('먼작귀 시작 오류', error.message); app.quit(); });
 }
@@ -139,6 +140,7 @@ function syncPin() {
     { label: '미니 모드', type: 'checkbox', checked: state.settings.mini, click: () => { try { toggleMini(); } catch (error) { dialog.showErrorBox('먼작귀', error.message); } } },
     { label: '클릭 통과', type: 'checkbox', checked: state.settings.clickThrough, click: toggleClickThrough },
     { label: '항상 위에', type: 'checkbox', checked: state.settings.pin, click: () => { state.settings.pin = !state.settings.pin; persist(); syncPin(); broadcast(); } },
+    { type: 'separator' }, ...(updates ? updates.menuItems() : []),
     { type: 'separator' }, { label: '종료', click: () => app.quit() }
   ]));
 }
@@ -181,12 +183,11 @@ async function start() {
   widgetWindow.on('move', saveBounds); widgetWindow.on('resize', saveBounds);
   const recover = () => { widgetWindow.setBounds(checkedBounds(widgetWindow.getBounds())); broadcast(); };
   screen.on('display-removed', recover); screen.on('display-added', recover); screen.on('display-metrics-changed', recover);
-  powerMonitor.on('resume', broadcast);
+  powerMonitor.on('resume', () => { broadcast(); void updates?.check(); });
   ipcMain.handle('widget:state', event => { authorized(event); return snapshot(); });
   ipcMain.handle('widget:artwork', event => {
     authorized(event);
-    if (event.sender !== widgetWindow.webContents) throw new Error('허용되지 않은 이미지 요청입니다.');
-    artwork ||= Object.fromEntries([['characters', 'characters-atlas-v2.png'], ['food', 'food-atlas.png']].map(([key, name]) =>
+    artwork ||= Object.fromEntries([['characters', 'characters-atlas-v2.png'], ['momonga', 'momonga-atlas.png'], ['food', 'food-atlas.png']].map(([key, name]) =>
       [key, 'data:image/png;base64,' + fs.readFileSync(path.join(ROOT, 'assets', name)).toString('base64')]));
     return artwork;
   });
@@ -217,5 +218,11 @@ async function start() {
     if (scheduleChanged) lastTimeline = null;
     applyWidgetMode(previous.mini); syncDisplay(); syncPin(); return broadcast();
   });
+  updates = createUpdater({ app, dialog,
+    getParent: () => [settingsWindow, widgetWindow].find(window => window && !window.isDestroyed() && window.isVisible() && !(window === widgetWindow && state.settings.clickThrough)),
+    beforeInstall: () => { rememberBounds(); persist(true); },
+    onStateChange: () => { if (!quitting && tray && !tray.isDestroyed() && widgetWindow && !widgetWindow.isDestroyed()) syncPin(); }
+  });
+  syncPin();
   setInterval(broadcast, 1000);
 }

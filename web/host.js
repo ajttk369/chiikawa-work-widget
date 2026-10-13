@@ -137,8 +137,7 @@
       return Object.freeze({
         getState: snapshot,
         getArtwork: () => {
-          if (!isWidget) throw new Error('허용되지 않은 이미지 요청입니다.');
-          return { characters: new URL('assets/characters-atlas-v2.png', location.href).href, food: new URL('assets/food-atlas.png', location.href).href };
+          return { characters: new URL('assets/characters-atlas-v2.png', location.href).href, momonga: new URL('assets/momonga-atlas.png', location.href).href, food: new URL('assets/food-atlas.png', location.href).href };
         },
         saveSettings: onlySettings(saveSettings),
         preview: onlySettings(previewAction),

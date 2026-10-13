@@ -4,7 +4,7 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <title>먼작귀</title><link rel="stylesheet" href="widget.css">
-  <script src="../node_modules/lucide/dist/umd/lucide.min.js" defer></script><script src="web-bridge.js" defer></script><script src="widget.js" defer></script>
+  <script src="../node_modules/lucide/dist/umd/lucide.min.js" defer></script><script src="web-bridge.js" defer></script><script src="characters.js" defer></script><script src="widget.js" defer></script>
 </head>
 <body>
   <header class="toolbar">
@@ -24,9 +24,10 @@
     <div class="landscape day" aria-hidden="true"></div><div id="sunset" class="landscape sunset" aria-hidden="true"></div><div id="night" class="landscape night" aria-hidden="true"></div>
     <div id="story" class="story" role="status" aria-live="polite" hidden></div>
     <div id="food" class="food" aria-hidden="true" hidden></div>
-    <button class="character" data-character="0" aria-label="치이카와 쓰다듬기" title="치이카와"><span class="pet-shadow"></span><canvas class="sprite" width="300" height="340" aria-hidden="true"></canvas><span class="speech" hidden></span></button>
-    <button class="character" data-character="1" aria-label="하치와레 쓰다듬기" title="하치와레"><span class="pet-shadow"></span><canvas class="sprite" width="300" height="340" aria-hidden="true"></canvas><span class="speech" hidden></span></button>
-    <button class="character" data-character="2" aria-label="우사기 쓰다듬기" title="우사기"><span class="pet-shadow"></span><canvas class="sprite" width="300" height="340" aria-hidden="true"></canvas><span class="speech" hidden></span></button>
+    <button class="character" data-character="chiikawa" aria-label="치이카와 쓰다듬기" title="치이카와" hidden><span class="pet-shadow"></span><canvas class="sprite" width="300" height="340" aria-hidden="true"></canvas><span class="speech" hidden></span></button>
+    <button class="character" data-character="hachiware" aria-label="하치와레 쓰다듬기" title="하치와레" hidden><span class="pet-shadow"></span><canvas class="sprite" width="300" height="340" aria-hidden="true"></canvas><span class="speech" hidden></span></button>
+    <button class="character" data-character="usagi" aria-label="우사기 쓰다듬기" title="우사기" hidden><span class="pet-shadow"></span><canvas class="sprite" width="300" height="340" aria-hidden="true"></canvas><span class="speech" hidden></span></button>
+    <button class="character" data-character="momonga" aria-label="모몽가 쓰다듬기" title="모몽가" hidden><span class="pet-shadow"></span><canvas class="sprite" width="300" height="340" aria-hidden="true"></canvas><span class="speech" hidden></span></button>
     <div id="hearts" class="hearts" aria-hidden="true"></div>
     <p id="error" class="error" role="alert" hidden></p>
   </main>

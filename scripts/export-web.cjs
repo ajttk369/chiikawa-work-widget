@@ -5,9 +5,9 @@ const output = path.join(ROOT, 'dist');
 const files = [
   'index.html', 'schedule.js',
   'web/host.js', 'web/web.css', 'web/download-config.js', 'web/download.js',
-  'renderer/index.html', 'renderer/widget.js', 'renderer/widget.css',
+  'renderer/index.html', 'renderer/widget.js', 'renderer/widget.css', 'renderer/characters.js',
   'renderer/settings.html', 'renderer/settings.js', 'renderer/settings.css', 'renderer/web-bridge.js',
-  'assets/meadow-atlas.png', 'assets/characters-atlas-v2.png', 'assets/food-atlas.png',
+  'assets/meadow-atlas.png', 'assets/characters-atlas-v2.png', 'assets/momonga-atlas.png', 'assets/food-atlas.png',
   'assets/chiikawa.ico', 'assets/chiikawa-icon.png', 'assets/chiikawa-favicon.png', 'assets/chiikawa-touch.png'
 ];
 for (const file of files) {

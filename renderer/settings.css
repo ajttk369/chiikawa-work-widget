@@ -78,6 +78,16 @@ legend {
 .days label:hover span { border-color: #9daf9b; }
 .days input:checked + span { border-color: #8ca684; color: #2e522c; background: #e3eddf; font-weight: 700; }
 .days input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+.friends-legend { width: 100%; }
+.friends-legend output { float: right; color: var(--muted); font-weight: 400; font-variant-numeric: tabular-nums; }
+.friends { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.friends label { display: flex; align-items: center; gap: 7px; min-width: 0; min-height: 76px; padding: 6px 9px; border: 1px solid var(--line); border-radius: 6px; background: #fff; cursor: pointer; }
+.friends label:has(input:checked) { border-color: #8ca684; background: #eaf2e5; }
+.friends label:has(input:disabled) { background: #f0f2ef; color: #7b877e; cursor: not-allowed; }
+.friends label:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+.friends input { flex: 0 0 16px; width: 16px; height: 16px; margin: 0; accent-color: var(--accent); }
+.friends canvas { flex: 0 0 46px; width: 46px; height: 53px; object-fit: contain; }
+.friends span { min-width: 0; font-size: 12px; overflow-wrap: anywhere; }
 .range-label { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .range-label output { color: #4e6652; font-variant-numeric: tabular-nums; white-space: nowrap; }
 input[type=range] { display: block; width: 100%; height: 20px; margin: 10px 0 12px; accent-color: var(--accent); cursor: pointer; }

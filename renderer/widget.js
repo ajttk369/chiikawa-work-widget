@@ -1,7 +1,6 @@
 const $ = selector => document.querySelector(selector);
 const icons = () => window.lucide?.createIcons({ attrs: { 'stroke-width': 1.7 } });
-const spriteRows = [{ y: 28, height: 279 }, { y: 309, height: 263 }, { y: 573, height: 305 }];
-const spriteColumns = [23, 314, 605, 896, 1187, 1478];
+const { profiles, crop: canvasCrop, prepare: prepareCharacters } = window.WidgetCharacters;
 const DEPARTURE_MS = 35000;
 const clamp = (value, min = 0, max = 1) => Math.max(min, Math.min(max, value));
 function loadImage(source) {
@@ -13,65 +12,39 @@ function loadImage(source) {
   });
   return { image, ready };
 }
-let atlas, meals;
+let atlas, momonga, meals;
 let data, audio, width = 0, fieldWidth = 0, size = 116;
 let raf = 0, lastFrame = 0, clockAt = 0, lastStatus = '', lastCycle = '', lastSoundEvent = '', hiddenAt = 0;
-let spriteFrames = [], mealFrames = [];
-let visualKey = '', previewAnchors = [], lastPreviewCue = -1, nextAmbientAt = 0, ambientTurn = 2, lastReminderId = '';
-const actors = [...document.querySelectorAll('.character')].map((node, index) => ({
-  node, sprite: node.querySelector('.sprite'), speech: node.querySelector('.speech'), index,
-  x: 0, target: 0, goal: 0, speed: 13 + index * 1.3, velocity: 0, direction: -1, painted: '',
-  walking: false, walkPhase: 0, lift: 0, action: null,
-  nextMove: 0, nextBlink: 0, blinkEnd: 0, petEnd: 0
-}));
-function showError(error) { $('#error').textContent = error.message || '요청을 처리하지 못했습니다.'; $('#error').hidden = false; }
-function opaqueBounds(canvas) {
-  const context = canvas.getContext('2d', { willReadFrequently: true });
-  const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
-  let left = canvas.width, top = canvas.height, right = -1, bottom = -1;
-  for (let y = 0; y < canvas.height; y++) for (let x = 0; x < canvas.width; x++) {
-    const offset = (y * canvas.width + x) * 4;
-    if (pixels[offset + 3] < 180 || (pixels[offset] > 190 && pixels[offset + 1] < 100 && pixels[offset + 2] < 100)) continue;
-    left = Math.min(left, x); right = Math.max(right, x); top = Math.min(top, y); bottom = Math.max(bottom, y);
-  }
-  if (right < left) throw new Error('이미지의 표시 영역을 찾지 못했습니다.');
-  left = Math.max(0, left - 2); top = Math.max(0, top - 2);
-  right = Math.min(canvas.width - 1, right + 2); bottom = Math.min(canvas.height - 1, bottom + 2);
-  return { x: left, y: top, width: right - left + 1, height: bottom - top + 1 };
-}
-function canvasCrop(image, x, y, width, height) {
-  const canvas = document.createElement('canvas');
-  canvas.width = Math.ceil(width); canvas.height = Math.ceil(height);
-  canvas.getContext('2d', { willReadFrequently: true }).drawImage(image, x, y, width, height, 0, 0, canvas.width, canvas.height);
-  return { canvas, bounds: opaqueBounds(canvas) };
-}
-function prepareSprites() {
-  const scaleX = atlas.image.naturalWidth / 1774, scaleY = atlas.image.naturalHeight / 887;
-  // Normalize transparent padding, body size and soles once, not on every animation frame.
-  spriteFrames = spriteRows.map(row => {
-    const sources = spriteColumns.map(x => canvasCrop(atlas.image, x * scaleX, row.y * scaleY, 280 * scaleX, row.height * scaleY));
-    const base = sources[0].bounds, height = Math.min(300, Math.round(230 * base.height / base.width));
-    const frames = sources.map(({ canvas: source, bounds }) => {
-      const frame = document.createElement('canvas'); frame.width = 300; frame.height = 340;
-      const context = frame.getContext('2d'); context.imageSmoothingQuality = 'high';
-      context.drawImage(source, bounds.x, bounds.y, bounds.width, bounds.height, 35, 326 - height, 230, height);
-      return frame;
-    });
-    // Keep the same upper body in both walking frames; alternate only the feet.
-    const feetTop = 326 - Math.round(height * .16);
-    const stableStep = document.createElement('canvas'); stableStep.width = 300; stableStep.height = 340;
-    const context = stableStep.getContext('2d');
-    context.drawImage(frames[1], 0, 0);
-    context.clearRect(0, feetTop, 300, 340 - feetTop);
-    context.drawImage(frames[2], 0, feetTop, 300, 340 - feetTop, 0, feetTop, 300, 340 - feetTop);
-    frames[2] = stableStep;
-    return frames;
+let spriteFrames = null, mealFrames = [];
+let visualKey = '', previewAnchors = [], lastPreviewCue = -1, nextAmbientAt = 0, ambientTurn = -1, lastReminderId = '', nextDialogueAt = 0;
+let actors = [];
+const nodes = [...document.querySelectorAll('.character')];
+function selectActors(ids) {
+  for (const node of nodes) { node.hidden = true; node.disabled = true; node.querySelector('.speech').hidden = true; }
+  actors = ids.map((id, index) => {
+    const node = nodes.find(node => node.dataset.character === id);
+    return { id, profile: profiles[id], node, sprite: node.querySelector('.sprite'), speech: node.querySelector('.speech'), index,
+      x: 0, target: 0, goal: 0, speed: profiles[id].speed, velocity: 0, direction: -1, painted: '',
+      walking: false, walkPhase: 0, lift: 0, action: null, spoken: {}, speechUntil: 0, routineKey: '',
+      nextMove: 0, nextBlink: 0, blinkEnd: 0, petEnd: 0 };
   });
+  fieldWidth = 0; visualKey = ''; ambientTurn = -1;
+  $('#hearts').replaceChildren();
+}
+function speak(actor, context, tick, duration = 3200) {
+  const choices = actor.profile.lines[context] || actor.profile.lines.idle;
+  const options = choices.filter(text => text !== actor.spoken[context]);
+  const text = options[Math.floor(Math.random() * options.length)] || choices[0];
+  actor.spoken[context] = text; actor.speech.textContent = text; actor.speechUntil = tick + duration;
+}
+function showError(error) { $('#error').textContent = error.message || '요청을 처리하지 못했습니다.'; $('#error').hidden = false; }
+function prepareSprites() {
+  spriteFrames = prepareCharacters(atlas.image, momonga.image);
   const cellWidth = meals.image.naturalWidth / 3, cellHeight = meals.image.naturalHeight / 2;
   mealFrames = Array.from({ length: 6 }, (_, index) => canvasCrop(meals.image, (index % 3) * cellWidth, Math.floor(index / 3) * cellHeight, cellWidth, cellHeight));
 }
 function paintSprite(actor, frame, bite) {
-  if (!spriteFrames.length) return;
+  if (!spriteFrames) return;
   const walkingFrame = frame === 1 || frame === 2;
   const reflected = walkingFrame && actor.direction > 0;
   const menu = frame === 5 ? data.day.menu : -1;
@@ -80,13 +53,13 @@ function paintSprite(actor, frame, bite) {
   const context = actor.sprite.getContext('2d');
   context.clearRect(0, 0, 300, 340); context.save();
   if (reflected) { context.translate(300, 0); context.scale(-1, 1); }
-  context.drawImage(spriteFrames[actor.index][frame], 0, 0);
+  context.drawImage(spriteFrames[actor.id][frame], 0, 0);
   context.restore();
   if (menu >= 0) {
     const { canvas, bounds } = mealFrames[menu];
     const scale = Math.min(64 / bounds.width, 64 / bounds.height);
     const w = bounds.width * scale, h = bounds.height * scale;
-    context.drawImage(canvas, bounds.x, bounds.y, bounds.width, bounds.height, 150 - w / 2, 263 - h / 2 - bite * 1.5, w, h);
+    context.drawImage(canvas, bounds.x, bounds.y, bounds.width, bounds.height, (actor.profile.foodX ?? 150) - w / 2, (actor.profile.foodY ?? 263) - h / 2 - bite * 1.5, w, h);
   }
   actor.painted = key;
 }
@@ -110,21 +83,22 @@ function sound() {
 }
 function layout() {
   const scene = $('#scene'), next = scene.clientWidth, oldField = fieldWidth;
-  size = Math.round(Math.min(data?.settings.size || 116, data?.settings.mini ? 88 : 144, scene.clientHeight * .58, next / 4.2));
+  const heightRoom = Math.max(12, (scene.clientHeight * .87 - 60) * 300 / 340);
+  size = Math.round(Math.min(data?.settings.size || 116, data?.settings.mini ? 88 : 144, heightRoom, next / 4.2));
   fieldWidth = next; width = next;
   document.documentElement.style.setProperty('--pet-size', size + 'px');
   document.documentElement.style.setProperty('--pet-height', size * 340 / 300 + 'px');
   for (const actor of actors) {
-    const spawn = fieldWidth * ((actor.index + .5) / 3) - size / 2;
+    const spawn = fieldWidth * ((actor.index + .5) / actors.length) - size / 2;
     actor.x = oldField ? actor.x / oldField * fieldWidth : spawn;
-    if (!oldField && data?.timeline.status === 'after' && !isDeparting(data.timeline.now)) actor.x = width - (3 - actor.index) * (size + 8) - 10;
+    if (!oldField && data?.timeline.status === 'after' && !isDeparting(data.timeline.now)) actor.x = width - (actors.length - actor.index) * (size + 8) - 10;
     actor.x = clamp(actor.x, 10, fieldWidth - size - 10);
     actor.nextMove = 0; actor.velocity = 0; actor.walking = false;
   }
   // Reflow once on resize, never push a moving friend back and forth each frame.
   for (let i = 1; i < actors.length; i++) actors[i].x = Math.max(actors[i].x, actors[i - 1].x + size + 8);
-  actors[2].x = Math.min(actors[2].x, fieldWidth - size - 10);
-  for (let i = 1; i >= 0; i--) actors[i].x = Math.min(actors[i].x, actors[i + 1].x - size - 8);
+  if (actors.length) actors[actors.length - 1].x = Math.min(actors[actors.length - 1].x, fieldWidth - size - 10);
+  for (let i = actors.length - 2; i >= 0; i--) actors[i].x = Math.min(actors[i].x, actors[i + 1].x - size - 8);
 }
 function weather(now) {
   const date = new Date(now), hour = date.getHours() + date.getMinutes() / 60;
@@ -159,17 +133,18 @@ function renderSceneMessage(now, tick = performance.now()) {
     mode === 'after' || (!mode && isDeparting(now)) ? '오늘도 수고했어!' :
     !mode && data.reminder && now < data.reminder.expiresAt ? data.reminder.text : '';
   if ($('#story').textContent !== text) $('#story').textContent = text;
-  $('#story').hidden = !text || actors.some(actor => actor.petEnd > tick);
+  $('#story').hidden = !text || actors.some(actor => actor.speechUntil > tick || actor.petEnd > tick);
   $('#food').hidden = status !== 'lunch';
 }
 function beginAction(actor, tick) {
-  const kind = ['hello', 'look', 'hop'][actor.index];
-  actor.action = { kind, start: tick, end: tick + 2400 };
+  const kind = actor.profile.action;
+  actor.action = { kind, start: tick, end: tick + 3200 };
   actor.velocity = 0; actor.walking = false; actor.target = actor.x; actor.nextMove = tick + 4200;
-  actor.speech.textContent = ['안녕!', '뭐 해?', '야하!'][actor.index];
+  const status = visualStatus(sceneNow(tick));
+  speak(actor, ['before', 'after', 'off'].includes(status) ? status : 'idle', tick);
   if (kind === 'look') {
     const neighbor = actors.filter(other => other !== actor).sort((a, b) => Math.abs(a.x - actor.x) - Math.abs(b.x - actor.x))[0];
-    actor.direction = neighbor.x > actor.x ? 1 : -1;
+    if (neighbor) actor.direction = neighbor.x > actor.x ? 1 : -1;
   }
 }
 function scheduleBehaviors(tick, now) {
@@ -177,15 +152,26 @@ function scheduleBehaviors(tick, now) {
   const mode = previewMode(now);
   if (mode === 'ambient') {
     const elapsed = now - data.preview.startedAt, stage = Math.floor(elapsed / 6000), within = elapsed % 6000;
-    if (stage < 3 && stage !== lastPreviewCue && within >= 1000 && within < 3400 &&
-        !actors.some(actor => actor.action || actor.petEnd > tick)) {
+    if (stage < actors.length && stage !== lastPreviewCue && within >= 1000 && within < 3400 &&
+        !actors.some(actor => actor.action || actor.petEnd > tick || actor.speechUntil > tick)) {
       beginAction(actors[stage], tick); lastPreviewCue = stage;
     }
     return;
   }
-  if (mode || !data.settings.ambient || visualStatus(now) === 'lunch' || isDeparting(now) || data.reminder) return;
-  if (tick < nextAmbientAt || actors.some(actor => actor.action || actor.petEnd > tick)) return;
-  const order = [1, 2, 3].map(offset => (ambientTurn + offset) % 3);
+  const status = visualStatus(now);
+  const routine = status === 'lunch' ? 'lunch' : mode === 'after' || isDeparting(now) ? 'after' :
+    data.reminder && now < data.reminder.expiresAt ? 'rest' : null;
+  if (routine) {
+    const key = routine === 'rest' ? data.reminder.id : visualKey;
+    if (tick >= nextDialogueAt && !actors.some(actor => actor.speechUntil > tick || actor.petEnd > tick)) {
+      const actor = actors.find(actor => actor.routineKey !== key && (routine !== 'lunch' || !actor.walking));
+      if (actor) { speak(actor, routine, tick); actor.routineKey = key; nextDialogueAt = tick + 4600; }
+    }
+    return;
+  }
+  if (mode || !data.settings.ambient || data.reminder) return;
+  if (tick < nextAmbientAt || actors.some(actor => actor.action || actor.petEnd > tick || actor.speechUntil > tick)) return;
+  const order = actors.map((_, offset) => (ambientTurn + offset + 1) % actors.length);
   const index = order.find(index => !actors[index].walking && Math.abs(actors[index].velocity) < .6);
   if (index === undefined) { nextAmbientAt = tick + 1500; return; }
   beginAction(actors[index], tick); ambientTurn = index;
@@ -197,12 +183,16 @@ function syncVisualState(tick, now) {
     visualKey = key; lastPreviewCue = -1;
     previewAnchors = actors.map(actor => actor.x);
     nextAmbientAt = tick + 18000 + Math.random() * 12000;
-    actors.forEach(actor => { actor.action = null; actor.velocity = 0; actor.walking = false; actor.nextMove = 0; });
+    nextDialogueAt = tick + 1200;
+    actors.forEach(actor => { actor.action = null; actor.speechUntil = 0; actor.velocity = 0; actor.walking = false; actor.nextMove = 0; });
   }
   return mode;
 }
 function update(value) {
-  const resized = !data || data.settings.size !== value.settings.size || data.settings.mini !== value.settings.mini;
+  const selection = value.settings.characters || ['chiikawa', 'hachiware', 'usagi'];
+  const selectionChanged = actors.map(actor => actor.id).join() !== selection.join();
+  const resized = !data || selectionChanged || data.settings.size !== value.settings.size || data.settings.mini !== value.settings.mini;
+  if (selectionChanged) selectActors(selection);
   data = value; clockAt = performance.now();
   document.body.classList.toggle('mini', value.settings.mini);
   const mode = syncVisualState(clockAt, value.timeline.now);
@@ -243,7 +233,7 @@ function update(value) {
   }
   if (value.reminder && value.reminder.id !== lastReminderId && !mode) { lastReminderId = value.reminder.id; sound(); }
   if (resized) { layout(); if (mode) previewAnchors = actors.map(actor => actor.x); }
-  if (spriteFrames.length && !document.hidden && !raf) {
+  if (spriteFrames && !document.hidden && !raf) {
     lastFrame = performance.now(); raf = requestAnimationFrame(draw);
   }
 }
@@ -255,10 +245,10 @@ function targetFor(actor, tick) {
     const phase = Math.floor((now - data.preview.startedAt) / 6500) % 2;
     return (previewAnchors[actor.index] ?? actor.x) - (phase ? 0 : Math.min(60, size * .6));
   }
-  if (status === 'lunch') return fieldWidth / 2 + (actor.index - 1) * (size + 12) - size / 2;
-  if (status === 'after') return width - (3 - actor.index) * (size + 8) - 10;
+  if (status === 'lunch') return fieldWidth / 2 + (actor.index - (actors.length - 1) / 2) * (size + 12) - size / 2;
+  if (status === 'after') return width - (actors.length - actor.index) * (size + 8) - 10;
   if (tick >= actor.nextMove) {
-    const slot = (fieldWidth - 24) / 3;
+    const slot = (fieldWidth - 24) / actors.length;
     const min = 12 + actor.index * slot + 5, max = 12 + (actor.index + 1) * slot - size - 5;
     actor.target = min + Math.random() * Math.max(0, max - min);
     actor.nextMove = tick + 6000 + Math.random() * 9000;
@@ -267,7 +257,7 @@ function targetFor(actor, tick) {
 }
 function draw(tick) {
   raf = 0;
-  if (document.hidden || !data || !spriteFrames.length) return;
+  if (document.hidden || !data || !spriteFrames) return;
   if (tick - lastFrame < 32) { raf = requestAnimationFrame(draw); return; }
   const dt = Math.min(.08, (tick - lastFrame) / 1000 || .033), now = sceneNow(tick);
   const pixelRatio = window.devicePixelRatio || 1;
@@ -316,8 +306,11 @@ function draw(tick) {
       action ? actionLift : actor.walking ? -.8 * (1 - Math.cos(actor.walkPhase * 2)) / 2 :
       eating ? 0 : -.35 * (1 + Math.sin(tick / 1600 + index));
     actor.lift += (desiredLift - actor.lift) * (1 - Math.exp(-dt * 8));
-    actor.sprite.style.transform = 'translateY(' + Math.round(actor.lift * pixelRatio) / pixelRatio + 'px)';
-    actor.speech.hidden = !petting && !action;
+    const angle = action?.kind === 'showoff' ? Math.sin(clamp((tick - action.start) / (action.end - action.start)) * Math.PI * 2) * 3 : 0;
+    actor.sprite.style.transform = 'translateY(' + Math.round(actor.lift * pixelRatio) / pixelRatio + 'px) rotate(' + angle.toFixed(2) + 'deg)';
+    actor.speech.hidden = actor.speechUntil <= tick;
+    const speechWidth = actor.speech.offsetWidth;
+    actor.speech.style.left = clamp(size / 2, speechWidth / 2 + 8 - actor.x, fieldWidth - 8 - speechWidth / 2 - actor.x) + 'px';
   });
   $('#food').style.left = fieldWidth / 2 + 'px';
   renderSceneMessage(now, tick);
@@ -334,9 +327,13 @@ function hearts(actor) {
   icons();
 }
 document.addEventListener('pointerdown', () => { if (data?.settings.sound) { try { audio ||= new AudioContext(); audio.resume().catch(() => {}); } catch {} } });
-actors.forEach(actor => actor.node.addEventListener('click', () => {
-  if (actor.node.disabled || actor.node.hidden) return;
-  actor.action = null; actor.petEnd = performance.now() + 950; actor.speech.textContent = ['고마워!', '헤헤!', '야하!'][actor.index]; hearts(actor); sound();
+nodes.forEach(node => node.addEventListener('click', () => {
+  const actor = actors.find(actor => actor.node === node);
+  if (!actor || node.disabled || node.hidden) return;
+  const tick = performance.now();
+  actors.forEach(other => { other.action = null; other.speechUntil = 0; });
+  actor.petEnd = tick + 950; actor.velocity = 0; actor.walking = false; actor.nextMove = tick + 2600;
+  speak(actor, 'pet', tick, 2600); hearts(actor); sound();
 }));
 for (const action of ['settings', 'pin', 'hide', 'quit', 'sound', 'mini']) $('#' + action).addEventListener('click', async () => {
   try { const result = await window.widget.action(action); if (result) update(result); } catch (error) { showError(error); }
@@ -347,7 +344,7 @@ document.addEventListener('visibilitychange', async () => {
   if (document.hidden) { hiddenAt = performance.now(); cancelAnimationFrame(raf); raf = 0; return; }
   try { update(await window.widget.getState()); } catch (error) { showError(error); }
   const elapsed = performance.now() - hiddenAt;
-  actors.forEach(actor => { actor.action = null; actor.nextMove = 0; actor.nextBlink += elapsed; actor.petEnd = 0; actor.velocity = 0; });
+  actors.forEach(actor => { actor.action = null; actor.speechUntil = 0; actor.nextMove = 0; actor.nextBlink += elapsed; actor.petEnd = 0; actor.velocity = 0; });
   nextAmbientAt = performance.now() + 18000 + Math.random() * 12000;
   $('#hearts').replaceChildren(); lastFrame = performance.now(); if (!raf) raf = requestAnimationFrame(draw);
 });
@@ -357,8 +354,8 @@ async function start() {
   window.widget.onState(update);
   try {
     const artwork = await window.widget.getArtwork();
-    atlas = loadImage(artwork.characters); meals = loadImage(artwork.food);
-    await Promise.all([atlas.ready, meals.ready]); prepareSprites();
+    atlas = loadImage(artwork.characters); momonga = loadImage(artwork.momonga); meals = loadImage(artwork.food);
+    await Promise.all([atlas.ready, momonga.ready, meals.ready]); prepareSprites();
     update(await window.widget.getState());
     if (!raf) { lastFrame = performance.now(); raf = requestAnimationFrame(draw); }
   } catch (error) { showError(error); }

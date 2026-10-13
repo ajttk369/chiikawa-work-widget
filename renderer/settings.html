@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
-  <title>먼작귀 설정</title><link rel="stylesheet" href="settings.css"><script src="../node_modules/lucide/dist/umd/lucide.min.js" defer></script><script src="web-bridge.js" defer></script><script src="settings.js" defer></script>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>먼작귀 설정</title><link rel="stylesheet" href="settings.css"><script src="../node_modules/lucide/dist/umd/lucide.min.js" defer></script><script src="web-bridge.js" defer></script><script src="characters.js" defer></script><script src="settings.js" defer></script>
 </head>
 <body>
   <form id="settingsForm">
@@ -16,6 +16,14 @@
     <fieldset><legend>근무 요일</legend><div class="days">
       <label><input type="checkbox" name="day" value="1"><span>월</span></label><label><input type="checkbox" name="day" value="2"><span>화</span></label><label><input type="checkbox" name="day" value="3"><span>수</span></label><label><input type="checkbox" name="day" value="4"><span>목</span></label><label><input type="checkbox" name="day" value="5"><span>금</span></label><label><input type="checkbox" name="day" value="6"><span>토</span></label><label><input type="checkbox" name="day" value="0"><span>일</span></label>
     </div></fieldset>
+    <fieldset><legend class="friends-legend">함께할 친구<output id="characterCount" aria-live="polite">3 / 3</output></legend>
+      <div class="friends">
+        <label><input type="checkbox" name="character" value="chiikawa"><canvas width="300" height="340" aria-hidden="true"></canvas><span>치이카와</span></label>
+        <label><input type="checkbox" name="character" value="hachiware"><canvas width="300" height="340" aria-hidden="true"></canvas><span>하치와레</span></label>
+        <label><input type="checkbox" name="character" value="usagi"><canvas width="300" height="340" aria-hidden="true"></canvas><span>우사기</span></label>
+        <label><input type="checkbox" name="character" value="momonga"><canvas width="300" height="340" aria-hidden="true"></canvas><span>모몽가</span></label>
+      </div>
+    </fieldset>
     <fieldset><legend>캐릭터와 소리</legend>
       <label class="range-label" for="size">캐릭터 크기<output id="sizeOutput" for="size">116px</output></label><input type="range" id="size" min="72" max="144" step="1">
       <label class="toggle-label"><input id="sound" type="checkbox"><span>반응과 시간 알림 소리</span></label>

@@ -3,10 +3,19 @@
   "productName": "먼작귀",
   "directories": { "output": "dist/desktop" },
   "files": [
-    "main.cjs", "preload.cjs", "schedule.cjs", "schedule.js", "renderer/**/*",
-    "assets/meadow-atlas.png", "assets/characters-atlas-v2.png", "assets/food-atlas.png",
+    "main.cjs", "preload.cjs", "schedule.cjs", "schedule.js", "updater.cjs", "renderer/**/*",
+    "assets/meadow-atlas.png", "assets/characters-atlas-v2.png", "assets/momonga-atlas.png", "assets/food-atlas.png",
     "assets/chiikawa-icon.png", "assets/chiikawa.ico"
   ],
+  "publish": {
+    "provider": "github",
+    "owner": "ajttk369",
+    "repo": "chiikawa-work-widget",
+    "private": false,
+    "protocol": "https",
+    "releaseType": "release",
+    "timeout": 20000
+  },
   "win": {
     "icon": "assets/chiikawa.ico",
     "target": [{ "target": "nsis", "arch": ["x64"] }]
