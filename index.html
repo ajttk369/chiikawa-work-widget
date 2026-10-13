@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="치이카와, 하치와레, 우사기와 함께하는 업무시간 위젯">
+  <meta name="theme-color" content="#f6f8f5">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>먼작귀 업무시간 위젯</title>
+  <link rel="icon" type="image/png" href="assets/characters-atlas-v2.png">
+  <link rel="stylesheet" href="web/web.css">
+  <script src="schedule.js" defer></script>
+  <script src="node_modules/lucide/dist/umd/lucide.min.js" defer></script>
+  <script src="web/host.js" defer></script>
+</head>
+<body>
+  <main class="widget-shell" id="widgetShell" aria-label="먼작귀 업무시간 위젯">
+    <iframe id="widgetFrame" src="renderer/index.html" title="먼작귀 친구들의 정원"></iframe>
+  </main>
+  <dialog id="settingsDialog" aria-label="먼작귀 설정">
+    <button id="closeSettings" type="button" title="설정 닫기" aria-label="설정 닫기"><i data-lucide="x"></i></button>
+    <iframe id="settingsFrame" title="업무시간과 화면 설정"></iframe>
+  </dialog>
+  <noscript>JavaScript를 켜면 먼작귀 위젯을 사용할 수 있습니다.</noscript>
+</body>
+</html>

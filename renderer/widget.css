@@ -1,0 +1,184 @@
+:root {
+  color-scheme: dark;
+  --pet-size: 116px;
+  --pet-height: 132px;
+  --ink: #f5f6f3;
+  --line: #ffffff18;
+  --toolbar-height: 42px;
+}
+* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+body {
+  font-family: "Segoe UI", "Malgun Gothic", sans-serif;
+  font-size: 13px;
+  letter-spacing: 0;
+  line-height: 1.5;
+  background: #27323a;
+  color: var(--ink);
+  user-select: none;
+}
+button { font: inherit; letter-spacing: 0; cursor: pointer; }
+button:focus-visible { outline: 2px solid #f2cf82; outline-offset: 2px; }
+[hidden] { display: none !important; }
+
+.toolbar {
+  height: var(--toolbar-height);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 10px;
+  -webkit-app-region: drag;
+  background: #29343b;
+  position: relative;
+  z-index: 3;
+}
+.toolbar time {
+  flex-shrink: 0;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.status {
+  flex-shrink: 0;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  line-height: 1.4;
+  font-weight: 600;
+  white-space: nowrap;
+  background: #e3e6e8;
+  color: #384c56;
+}
+.status[data-state=work] { background: #bddb8e; color: #2c4826; }
+.status[data-state=lunch] { background: #f4d99c; color: #614b20; }
+.status[data-state=after] { background: #ecd0dd; color: #63394e; }
+.status[data-state=off] { background: #c9dce8; color: #315365; }
+.time-info {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+}
+.time-info span { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.time-info #remaining { color: #f5f6f3; flex: 0 1 auto; }
+.time-info #secondary { color: #c5cfd1; font-size: 11px; flex: 1; }
+.tools { display: flex; gap: 4px; -webkit-app-region: no-drag; flex-shrink: 0; }
+.tools button {
+  display: grid;
+  place-items: center;
+  width: 29px;
+  height: 29px;
+  padding: 0;
+  border: 1px solid transparent;
+  background: #ffffff0a;
+  color: #dae1e2;
+  border-radius: 5px;
+}
+.tools button:hover { background: #ffffff19; color: #fff; }
+.tools button:active { background: #ffffff29; }
+.tools button[aria-pressed=true] { background: #e8d39b; color: #354247; }
+.tools button[aria-pressed=true]:hover { background: #f0dda9; }
+.tools #quit:hover { background: #974755; }
+.tools svg { width: 16px; height: 16px; stroke-width: 1.8; }
+.progress { height: 3px; background: #34474a; position: relative; z-index: 3; }
+.progress span { display: block; height: 100%; width: 0; background: #b6d487; transition: width 1s linear; }
+
+.scene { position: relative; height: calc(100% - var(--toolbar-height) - 3px); overflow: hidden; background: #d9e6c3; isolation: isolate; }
+.landscape { position: absolute; inset: 0; background-image: url('../assets/meadow-atlas.png'); background-size: 100% 300%; background-repeat: no-repeat; pointer-events: none; }
+.day { background-position: 50% 0; }
+.sunset { background-position: 50% 50%; opacity: 0; }
+.night { background-position: 50% 100%; opacity: 0; }
+.sunset, .night { transition: opacity 4s linear; }
+.character { position: absolute; left: 0; bottom: 13%; width: var(--pet-size); height: var(--pet-height); border: 0; background: none; padding: 0; z-index: 2; color: #43352f; touch-action: manipulation; }
+.character:focus-visible { outline-color: #57764b; border-radius: 8px; }
+.sprite { display: block; width: 100%; height: 100%; transform-origin: 50% 92%; animation: none; }
+.pet-shadow { position: absolute; left: 25%; right: 25%; height: 7px; bottom: 2%; border-radius: 50%; background: #344c3826; filter: blur(2px); }
+.speech {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 3px);
+  transform: translateX(-50%);
+  min-width: 50px;
+  max-width: 145px;
+  width: max-content;
+  background: #fffff6f2;
+  border: 1px solid #92776b55;
+  border-radius: 8px;
+  padding: 5px 9px;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+  overflow-wrap: anywhere;
+  box-shadow: 0 2px 4px #38241715;
+}
+.speech:after { content: ''; position: absolute; left: calc(50% - 3px); bottom: -4px; width: 6px; height: 6px; background: #fffff6; transform: rotate(45deg); border-bottom: 1px solid #92776b55; border-right: 1px solid #92776b55; }
+.story {
+  position: absolute;
+  z-index: 3;
+  bottom: calc(13% + var(--pet-height) + 5px);
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: calc(100% - 32px);
+  background: #fffff6eb;
+  color: #594a3d;
+  padding: 7px 14px;
+  border: 1px solid #9b857155;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+  overflow-wrap: anywhere;
+  box-shadow: 0 2px 4px #38241713;
+}
+.food { position: absolute; left: 50%; bottom: 5%; transform: translateX(-50%); width: 74px; height: 111px; z-index: 2; background-image: url('../assets/food-atlas.png'); background-size: 300% 200%; background-repeat: no-repeat; pointer-events: none; }
+.hearts { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+.heart { position: absolute; width: 17px; height: 17px; animation: heart-rise 1.15s ease-out forwards; color: #ed7596; filter: drop-shadow(0 1px 1px #6d3b3b30); }
+.heart svg { width: 100%; height: 100%; fill: #f59daf; stroke-width: 1.5; }
+.error { position: absolute; z-index: 6; bottom: 8px; left: 12px; right: 12px; margin: 0; color: #752739; background: #fff7f3; padding: 8px 12px; border-radius: 4px; font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+.paused .sprite, .paused .heart { animation-play-state: paused; }
+.preview-label { flex-shrink: 0; font-size: 11px; color: #f1d28a; white-space: nowrap; }
+
+@keyframes heart-rise {
+  0% { opacity: 1; transform: translate(0, 0) scale(.7); }
+  100% { opacity: 0; transform: translate(var(--drift, 12px), -62px) scale(1.2); }
+}
+@media (max-width: 710px) {
+  .time-info { display: grid; gap: 0; font-size: 11px; line-height: 1.35; }
+  .time-info #secondary { font-size: 10px; }
+  .toolbar { gap: 7px; padding: 0 8px; }
+  .toolbar time { font-size: 17px; }
+  .tools { gap: 3px; }
+  .tools button { width: 27px; height: 27px; }
+  .food { width: 60px; height: 90px; }
+}
+body.mini { --toolbar-height: 36px; }
+body.mini .toolbar { gap: 7px; padding: 0 8px; }
+body.mini .toolbar time { font-size: 16px; }
+body.mini .time-info, body.mini .progress, body.mini #sound, body.mini #pin { display: none; }
+body.mini .tools { margin-left: auto; gap: 3px; }
+body.mini .tools button { width: 25px; height: 25px; }
+body.mini .tools svg { width: 15px; height: 15px; }
+body.mini .scene { height: calc(100% - var(--toolbar-height)); }
+body.mini .status { padding: 3px 6px; }
+body.mini .story { font-size: 11px; padding: 5px 9px; }
+body.mini .speech { font-size: 11px; padding: 4px 7px; }
+body.mini .food { width: 50px; height: 75px; }
+body.web .toolbar { -webkit-app-region: no-drag; }
+@media (max-width: 420px) {
+  body.web .toolbar { gap: 5px; padding: 0 7px; }
+  body.web .toolbar time { font-size: 15px; }
+  body.web .status { font-size: 10px; padding: 3px 6px; }
+  body.web .tools button { width: 25px; height: 25px; }
+  body.web .preview-label { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sprite { transform: none !important; animation: none !important; }
+  .landscape { transition: none; }
+  .progress span { transition: none; }
+}

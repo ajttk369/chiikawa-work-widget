@@ -1,0 +1,53 @@
+:root { color-scheme: light; font-family: "Segoe UI", "Malgun Gothic", sans-serif; letter-spacing: 0; }
+* { box-sizing: border-box; }
+html, body { min-width: 280px; margin: 0; }
+body { min-height: 100dvh; display: grid; place-items: center; padding: 16px; background: #f6f8f5; }
+.widget-shell {
+  width: 900px;
+  height: 320px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100dvh - 32px);
+  min-width: min(360px, calc(100vw - 32px));
+  min-height: min(240px, calc(100dvh - 32px));
+  overflow: hidden;
+  resize: both;
+  border-radius: 8px;
+  background: #e3e9dc;
+  box-shadow: 0 8px 32px #35443b12;
+}
+.widget-shell.mini { width: 480px; height: 220px; min-height: min(200px, calc(100dvh - 32px)); }
+iframe { display: block; width: 100%; height: 100%; border: 0; }
+dialog {
+  width: 430px;
+  height: 730px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100dvh - 24px);
+  padding: 0;
+  border: 1px solid #dce4dc;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f6f8f5;
+  box-shadow: 0 16px 60px #25352933;
+}
+dialog::backdrop { background: #25352955; }
+#closeSettings {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid #dce4dc;
+  border-radius: 6px;
+  background: #fff;
+  color: #526753;
+  cursor: pointer;
+}
+#closeSettings:hover { background: #eaf0e7; }
+#closeSettings:focus-visible { outline: 2px solid #51734f; outline-offset: 2px; }
+#closeSettings svg { width: 18px; height: 18px; }
+noscript { color: #35443b; font-size: 14px; }
+@media (max-width: 600px) { .widget-shell { resize: none; } }

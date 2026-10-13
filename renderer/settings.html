@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>먼작귀 설정</title><link rel="stylesheet" href="settings.css"><script src="../node_modules/lucide/dist/umd/lucide.min.js" defer></script><script src="web-bridge.js" defer></script><script src="settings.js" defer></script>
+</head>
+<body>
+  <form id="settingsForm">
+    <header><h1>설정</h1><span>먼작귀</span></header>
+    <main class="settings-content" aria-label="위젯 설정 항목">
+    <fieldset><legend>하루 일정</legend><div class="times">
+      <label>출근<input type="time" id="start" required></label><label>퇴근<input type="time" id="end" required></label>
+      <label>점심 시작<input type="time" id="lunchStart" required></label><label>점심 종료<input type="time" id="lunchEnd" required></label>
+    </div></fieldset>
+    <fieldset><legend>근무 요일</legend><div class="days">
+      <label><input type="checkbox" name="day" value="1"><span>월</span></label><label><input type="checkbox" name="day" value="2"><span>화</span></label><label><input type="checkbox" name="day" value="3"><span>수</span></label><label><input type="checkbox" name="day" value="4"><span>목</span></label><label><input type="checkbox" name="day" value="5"><span>금</span></label><label><input type="checkbox" name="day" value="6"><span>토</span></label><label><input type="checkbox" name="day" value="0"><span>일</span></label>
+    </div></fieldset>
+    <fieldset><legend>캐릭터와 소리</legend>
+      <label class="range-label" for="size">캐릭터 크기<output id="sizeOutput" for="size">116px</output></label><input type="range" id="size" min="72" max="144" step="1">
+      <label class="toggle-label"><input id="sound" type="checkbox"><span>반응과 시간 알림 소리</span></label>
+      <label class="toggle-label"><input id="mini" type="checkbox"><span>미니 모드</span></label>
+      <label class="toggle-label"><input id="ambient" type="checkbox"><span>소소한 행동</span></label>
+    </fieldset>
+    <fieldset><legend>화면</legend>
+      <label class="toggle-label"><input id="clickThrough" type="checkbox"><span>클릭 통과</span></label>
+      <label class="range-label display-range" for="opacity">불투명도<output id="opacityOutput" for="opacity">100%</output></label><input type="range" id="opacity" min="40" max="100" step="1">
+      <label class="interval-label">배경<select id="background"><option value="auto">자동</option><option value="day">낮</option><option value="sunset">노을</option><option value="night">밤</option></select></label>
+    </fieldset>
+    <fieldset><legend>휴식 알림</legend>
+      <label class="toggle-label"><input id="breakEnabled" type="checkbox"><span>업무 중 휴식 알림</span></label>
+      <label class="interval-label">간격<select id="breakMinutes"><option value="30">30분</option><option value="45">45분</option><option value="60">60분</option><option value="90">90분</option><option value="120">120분</option></select></label>
+    </fieldset>
+    <fieldset><legend>동작 미리보기</legend>
+      <div class="preview-controls"><select id="previewMode" aria-label="미리보기 동작"><option value="walk">양방향 걷기</option><option value="lunch">점심 식사</option><option value="after">퇴근 인사</option><option value="ambient">소소한 행동</option></select>
+        <button type="button" id="previewPlay" title="미리보기 재생" aria-label="미리보기 재생"><i data-lucide="play"></i></button>
+        <button type="button" id="previewStop" title="미리보기 중지" aria-label="미리보기 중지" disabled><i data-lucide="square"></i></button>
+      </div><output id="previewState" role="status" aria-live="polite"></output>
+    </fieldset>
+    </main>
+    <footer>
+      <p id="feedback" role="status" aria-live="polite"></p>
+      <button type="button" id="reset" class="reset" title="설정 기본값으로 되돌리기" aria-label="설정 기본값으로 되돌리기"><i data-lucide="rotate-ccw"></i></button>
+      <button type="submit" id="save"><i data-lucide="check"></i>저장</button>
+    </footer>
+  </form>
+</body>
+</html>
