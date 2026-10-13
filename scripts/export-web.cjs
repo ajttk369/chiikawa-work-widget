@@ -7,7 +7,8 @@ const files = [
   'web/host.js', 'web/web.css',
   'renderer/index.html', 'renderer/widget.js', 'renderer/widget.css',
   'renderer/settings.html', 'renderer/settings.js', 'renderer/settings.css', 'renderer/web-bridge.js',
-  'assets/meadow-atlas.png', 'assets/characters-atlas-v2.png', 'assets/food-atlas.png'
+  'assets/meadow-atlas.png', 'assets/characters-atlas-v2.png', 'assets/food-atlas.png',
+  'assets/chiikawa.ico', 'assets/chiikawa-favicon.png', 'assets/chiikawa-touch.png'
 ];
 for (const file of files) {
   const target = path.join(output, file);

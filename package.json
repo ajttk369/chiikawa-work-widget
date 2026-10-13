@@ -1,6 +1,6 @@
 {
   "name": "meonjakkwi-widget",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Offline Windows desktop companions with workday routines",
   "main": "main.cjs",
@@ -8,7 +8,8 @@
     "postinstall": "node node_modules/electron/install.js",
     "start": "electron .",
     "web": "node scripts/serve-web.cjs",
-    "build:web": "node scripts/export-web.cjs"
+    "build:web": "node scripts/export-web.cjs",
+    "dist:win": "npx --yes electron-builder@26 --config electron-builder.json --win nsis --x64 --publish never"
   },
   "dependencies": { "lucide": "1.55.0" },
   "devDependencies": { "electron": "44.7.0" }

@@ -7,6 +7,7 @@ const { DEFAULTS, MENUS, validateSettings, timeline } = require('./schedule.cjs'
 const ROOT = __dirname, RENDERER = path.join(ROOT, 'renderer');
 let widgetWindow, settingsWindow, widgetIcon, artwork, tray, state, file, lastTimeline, preview = null, reminder = null, quitting = false, saveTimer, storageError = '';
 app.setName('먼작귀');
+if (process.platform === 'win32') app.setAppUserModelId('com.ajttk369.chiikawaworkwidget');
 if (!app.requestSingleInstanceLock()) app.quit();
 else {
   app.on('second-instance', () => showWidget());
@@ -154,9 +155,8 @@ function authorized(event, settingsOnly = false) {
 async function start() {
   const profile = path.join(app.getPath('appData'), 'MeonjakkwiWidget');
   fs.mkdirSync(profile, { recursive: true }); app.setPath('userData', profile); file = path.join(profile, 'settings.json'); loadState();
-  const atlas = nativeImage.createFromPath(path.join(ROOT, 'assets', 'characters-atlas-v2.png'));
-  const dimensions = atlas.getSize();
-  const icon = atlas.crop({ x: 0, y: 0, width: Math.floor(dimensions.width / 6), height: Math.floor(dimensions.height / 3) }).resize({ width: 32, height: 32 });
+  const icon = nativeImage.createFromPath(path.join(ROOT, 'assets', 'chiikawa-icon.png'));
+  if (icon.isEmpty()) throw new Error('치이카와 아이콘 파일을 불러오지 못했습니다.');
   widgetIcon = icon;
   session.defaultSession.setPermissionRequestHandler((_contents, _permission, callback) => callback(false));
   session.defaultSession.setPermissionCheckHandler(() => false);
@@ -172,7 +172,7 @@ async function start() {
   widgetWindow = new BrowserWindow({ ...checkedBounds(state.bounds), minWidth: state.settings.mini ? 380 : 580, minHeight: state.settings.mini ? 200 : 240, maxWidth: 1800, maxHeight: 700,
     title: '먼작귀', frame: false, resizable: true, show: false, backgroundColor: '#27323a', icon, webPreferences: preferences() });
   Menu.setApplicationMenu(null); secureWindow(widgetWindow); syncDisplay();
-  tray = new Tray(icon); tray.setToolTip('먼작귀 업무시간 위젯'); tray.on('double-click', showWidget); syncPin();
+  tray = new Tray(icon.resize({ width: 32, height: 32 })); tray.setToolTip('먼작귀 업무시간 위젯'); tray.on('double-click', showWidget); syncPin();
   widgetWindow.loadFile(path.join(RENDERER, 'index.html'));
   widgetWindow.once('ready-to-show', () => { widgetWindow.show(); broadcast(); });
   widgetWindow.on('close', event => { if (!quitting) { event.preventDefault(); widgetWindow.hide(); } });

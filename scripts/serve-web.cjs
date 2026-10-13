@@ -2,12 +2,13 @@ const http = require('node:http');
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const ROOT = path.resolve(__dirname, '..');
-const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.png': 'image/png' };
+const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.png': 'image/png', '.ico': 'image/x-icon' };
 const allowedFiles = new Set([
   'index.html', 'schedule.js', 'web/host.js', 'web/web.css',
   'renderer/index.html', 'renderer/widget.js', 'renderer/widget.css',
   'renderer/settings.html', 'renderer/settings.js', 'renderer/settings.css', 'renderer/web-bridge.js',
   'assets/meadow-atlas.png', 'assets/characters-atlas-v2.png', 'assets/food-atlas.png',
+  'assets/chiikawa.ico', 'assets/chiikawa-favicon.png', 'assets/chiikawa-touch.png',
   'node_modules/lucide/dist/umd/lucide.min.js'
 ]);
 const server = http.createServer(async (request, response) => {

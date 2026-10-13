@@ -1,0 +1,23 @@
+{
+  "appId": "com.ajttk369.chiikawaworkwidget",
+  "productName": "먼작귀",
+  "directories": { "output": "dist/desktop" },
+  "files": [
+    "main.cjs", "preload.cjs", "schedule.cjs", "schedule.js", "renderer/**/*",
+    "assets/meadow-atlas.png", "assets/characters-atlas-v2.png", "assets/food-atlas.png",
+    "assets/chiikawa-icon.png", "assets/chiikawa.ico"
+  ],
+  "win": {
+    "icon": "assets/chiikawa.ico",
+    "target": [{ "target": "nsis", "arch": ["x64"] }]
+  },
+  "nsis": {
+    "installerIcon": "assets/chiikawa.ico",
+    "uninstallerIcon": "assets/chiikawa.ico",
+    "installerHeaderIcon": "assets/chiikawa.ico",
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "먼작귀",
+    "artifactName": "chiikawa-work-widget-setup-${version}-${arch}.${ext}"
+  }
+}
