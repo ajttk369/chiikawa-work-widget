@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="치이카와, 하치와레, 우사기, 모몽가 중 원하는 친구와 함께하는 업무시간 위젯">
+  <meta name="description" content="치이카와, 하치와레, 우사기, 모몽가 중 원하는 친구 1~3명과 함께하는 업무시간 위젯. Windows v1.0.2 다운로드와 자동 업데이트를 지원합니다.">
   <meta name="theme-color" content="#f6f8f5">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <title>먼작귀 업무시간 위젯</title>
@@ -21,10 +21,10 @@
   <main class="page">
     <header class="page-header">
       <img class="brand-icon" src="assets/chiikawa-icon.png" width="56" height="56" alt="">
-      <div><h1>먼작귀 업무시간 위젯</h1><p>치이카와·하치와레·우사기·모몽가와 함께하는 Windows 위젯</p></div>
+      <div><h1>먼작귀 업무시간 위젯</h1><p>치이카와·하치와레·우사기·모몽가 중 원하는 친구와 함께해요.</p></div>
     </header>
     <section class="preview-section" aria-labelledby="previewHeading">
-      <h2 id="previewHeading">미리보기</h2>
+      <h2 id="previewHeading">웹 미리보기</h2>
       <div class="preview-stage">
         <div class="widget-shell" id="widgetShell" aria-label="먼작귀 업무시간 위젯">
           <iframe id="widgetFrame" src="renderer/index.html" title="먼작귀 친구들의 정원"></iframe>
@@ -33,17 +33,17 @@
     </section>
     <section class="download-section" aria-label="Windows 설치 파일">
       <div class="download-primary">
-        <a id="downloadButton" class="download-button" href="https://github.com/ajttk369/chiikawa-work-widget/releases/download/v1.0.1/chiikawa-work-widget-setup-1.0.1-x64.exe"><i data-lucide="download"></i><span>Windows 다운로드</span></a>
-        <p id="downloadStatus" role="status">Windows 64비트 · v1.0.1 · 113 MB</p>
+        <a id="downloadButton" class="download-button" href="https://github.com/ajttk369/chiikawa-work-widget/releases/download/v1.0.2/chiikawa-work-widget-setup-1.0.2-x64.exe"><i data-lucide="download"></i><span>Windows 다운로드</span></a>
+        <p id="downloadStatus" role="status">Windows 64비트 · v1.0.2 · 114 MB</p>
       </div>
       <a class="release-link" id="releaseLink" href="https://github.com/ajttk369/chiikawa-work-widget/releases" target="_blank" rel="noopener noreferrer">배포 파일 보기<i data-lucide="external-link"></i></a>
     </section>
     <section class="install-guide" aria-labelledby="installHeading">
       <h2 id="installHeading">설치하고 실행하기</h2>
       <ol class="install-steps">
-        <li><strong>설치 파일 받기</strong><p>위의 Windows 다운로드 버튼으로 <code>.exe</code> 파일을 받아요.</p></li>
+        <li><strong>설치 파일 받기</strong><p>위의 Windows 다운로드 버튼으로 최신 <code>.exe</code> 파일 하나만 받아요.</p></li>
         <li><strong>설치하기</strong><p>받은 파일을 더블클릭하고 설치를 완료해요.</p></li>
-        <li><strong>위젯 열기</strong><p>바탕화면 아이콘을 더블클릭해요. 아이콘이 없으면 시작 메뉴에서 <b>먼작귀</b>를 검색해 실행해요.</p></li>
+        <li><strong>열고 친구 고르기</strong><p>바탕화면 아이콘이나 시작 메뉴의 <b>먼작귀</b>로 실행해요. 설정의 <b>함께할 친구</b>에서 원하는 친구 1~3명을 고르고 저장해요.</p></li>
       </ol>
       <div class="shortcut-guide">
         <h3><i data-lucide="monitor"></i>바탕화면에 아이콘 두기</h3>
@@ -53,6 +53,11 @@
           <li>열린 폴더의 먼작귀 아이콘을 우클릭한 뒤 <b>추가 옵션 표시 → 보내기 → 바탕 화면에 바로 가기 만들기</b>를 선택해요.</li>
         </ol>
       </div>
+      <div class="shortcut-guide">
+        <h3><i data-lucide="refresh-cw"></i>새 버전 업데이트</h3>
+        <p>앱이 새 버전을 확인하면 알려줘요. <b>다운로드 → 재시작하고 적용</b>을 선택하면 업데이트돼요. 트레이 아이콘을 우클릭해 <b>업데이트 확인</b>을 누를 수도 있어요.</p>
+        <p>업데이트 확인과 다운로드에는 인터넷 연결이 필요해요. 업무시간과 캐릭터 설정은 그대로 유지돼요.</p>
+      </div>
     </section>
     <footer class="page-footer">
       <span>Windows 64비트용 · 설치 후 인터넷 연결 없이 사용 가능 · 비공식 팬 프로젝트</span>
@@ -61,7 +66,7 @@
   </main>
   <dialog id="settingsDialog" aria-label="먼작귀 설정">
     <button id="closeSettings" type="button" title="설정 닫기" aria-label="설정 닫기"><i data-lucide="x"></i></button>
-    <iframe id="settingsFrame" title="업무시간과 화면 설정"></iframe>
+    <iframe id="settingsFrame" title="업무시간과 캐릭터·화면 설정"></iframe>
   </dialog>
   <noscript>JavaScript를 켜면 먼작귀 위젯을 사용할 수 있습니다.</noscript>
 </body>
