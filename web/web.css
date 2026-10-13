@@ -1,22 +1,81 @@
-:root { color-scheme: light; font-family: "Segoe UI", "Malgun Gothic", sans-serif; letter-spacing: 0; }
+:root {
+  color-scheme: light;
+  font-family: "Segoe UI", "Malgun Gothic", sans-serif;
+  letter-spacing: 0;
+  color: #35443b;
+  line-height: 1.6;
+  background: #f6f8f5;
+}
 * { box-sizing: border-box; }
 html, body { min-width: 280px; margin: 0; }
-body { min-height: 100dvh; display: grid; place-items: center; padding: 16px; background: #f6f8f5; }
+body { min-height: 100dvh; padding: 48px 24px 32px; }
+.page { width: 900px; max-width: 100%; margin: 0 auto; }
+.page-header { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+.brand-icon { flex-shrink: 0; width: 56px; height: 56px; object-fit: contain; }
+.page-header div { min-width: 0; }
+h1 { margin: 0; font-size: 26px; line-height: 1.4; font-weight: 700; overflow-wrap: anywhere; }
+.page-header p { margin: 5px 0 0; color: #637368; font-size: 14px; overflow-wrap: anywhere; }
+h2 { margin: 0 0 14px; font-size: 15px; font-weight: 700; line-height: 1.5; }
+.preview-section h2 { margin-bottom: 10px; color: #637368; font-size: 13px; font-weight: 600; }
+.preview-stage { display: flex; justify-content: center; width: 100%; }
 .widget-shell {
   width: 900px;
   height: 320px;
-  max-width: calc(100vw - 32px);
-  max-height: calc(100dvh - 32px);
-  min-width: min(360px, calc(100vw - 32px));
-  min-height: min(240px, calc(100dvh - 32px));
+  max-width: 100%;
+  max-height: 700px;
+  min-width: min(360px, 100%);
+  min-height: 240px;
   overflow: hidden;
   resize: both;
   border-radius: 8px;
   background: #e3e9dc;
-  box-shadow: 0 8px 32px #35443b12;
+  box-shadow: 0 6px 24px #35443b0d;
 }
-.widget-shell.mini { width: 480px; height: 220px; min-height: min(200px, calc(100dvh - 32px)); }
+.widget-shell.mini { width: 480px; height: 220px; min-height: 200px; }
 iframe { display: block; width: 100%; height: 100%; border: 0; }
+.download-section { display: flex; justify-content: space-between; align-items: center; gap: 18px; padding: 24px 0 22px; }
+.download-primary { min-width: 0; }
+.download-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 46px;
+  padding: 10px 22px;
+  border: 1px solid #456a43;
+  border-radius: 6px;
+  color: #fff;
+  background: #51734f;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+.download-button:hover { background: #405e3f; }
+.download-button:active { background: #355134; }
+.download-button[aria-disabled=true] { color: #738170; border-color: #d7e0d3; background: #e4eadd; cursor: not-allowed; }
+.download-button svg { flex-shrink: 0; width: 18px; height: 18px; }
+#downloadStatus { margin: 7px 0 0; font-size: 12px; color: #637368; font-variant-numeric: tabular-nums; }
+.release-link { display: inline-flex; align-items: center; gap: 6px; color: #526753; font-size: 13px; text-decoration: none; white-space: nowrap; }
+.release-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.release-link svg { width: 14px; height: 14px; flex-shrink: 0; }
+a:focus-visible, button:focus-visible { outline: 2px solid #51734f; outline-offset: 4px; }
+.install-guide { border-top: 1px solid #dce4dc; padding-top: 23px; }
+.install-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin: 0; padding: 0; list-style: none; counter-reset: install; }
+.install-steps li { min-width: 0; counter-increment: install; }
+.install-steps strong { display: block; font-size: 14px; font-weight: 600; }
+.install-steps strong::before { content: counter(install) ". "; color: #6e8568; font-variant-numeric: tabular-nums; }
+.install-steps p { margin: 7px 0 0; color: #637368; font-size: 13px; overflow-wrap: anywhere; }
+.install-guide b { color: #435745; font-weight: 600; }
+code { font-size: 12px; font-family: Consolas, monospace; }
+.shortcut-guide { margin-top: 24px; padding-top: 18px; border-top: 1px solid #e4e9e1; }
+.shortcut-guide h3 { display: flex; align-items: center; gap: 7px; margin: 0 0 9px; font-size: 14px; line-height: 1.5; font-weight: 600; }
+.shortcut-guide h3 svg { width: 16px; height: 16px; flex-shrink: 0; color: #6e8568; }
+.shortcut-guide ol { margin: 0; padding-left: 20px; color: #637368; font-size: 13px; }
+.shortcut-guide li { padding-left: 3px; overflow-wrap: anywhere; }
+.shortcut-guide li + li { margin-top: 5px; }
+.page-footer { margin-top: 26px; color: #7c877e; font-size: 12px; overflow-wrap: anywhere; }
+
 dialog {
   width: 430px;
   height: 730px;
@@ -47,7 +106,16 @@ dialog::backdrop { background: #25352955; }
   cursor: pointer;
 }
 #closeSettings:hover { background: #eaf0e7; }
-#closeSettings:focus-visible { outline: 2px solid #51734f; outline-offset: 2px; }
 #closeSettings svg { width: 18px; height: 18px; }
-noscript { color: #35443b; font-size: 14px; }
-@media (max-width: 600px) { .widget-shell { resize: none; } }
+noscript { display: block; margin: 16px auto; max-width: 900px; color: #35443b; font-size: 14px; }
+@media (max-width: 600px) {
+  body { padding: 24px 16px; }
+  .page-header { gap: 12px; margin-bottom: 22px; align-items: flex-start; }
+  .brand-icon { width: 44px; height: 44px; margin-top: 4px; }
+  .widget-shell { resize: none; }
+  .download-section { align-items: flex-start; flex-direction: column; gap: 10px; padding: 20px 0; }
+  .download-primary, .download-button { width: 100%; }
+  .install-steps { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .install-steps p { margin-top: 4px; }
+  .page-footer { margin-top: 22px; }
+}

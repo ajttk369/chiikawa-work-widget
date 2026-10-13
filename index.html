@@ -13,11 +13,48 @@
   <link rel="stylesheet" href="web/web.css">
   <script src="schedule.js" defer></script>
   <script src="node_modules/lucide/dist/umd/lucide.min.js" defer></script>
+  <script src="web/download-config.js" defer></script>
+  <script src="web/download.js" defer></script>
   <script src="web/host.js" defer></script>
 </head>
 <body>
-  <main class="widget-shell" id="widgetShell" aria-label="먼작귀 업무시간 위젯">
-    <iframe id="widgetFrame" src="renderer/index.html" title="먼작귀 친구들의 정원"></iframe>
+  <main class="page">
+    <header class="page-header">
+      <img class="brand-icon" src="assets/chiikawa-icon.png" width="56" height="56" alt="">
+      <div><h1>먼작귀 업무시간 위젯</h1><p>치이카와·하치와레·우사기와 함께하는 Windows 위젯</p></div>
+    </header>
+    <section class="preview-section" aria-labelledby="previewHeading">
+      <h2 id="previewHeading">미리보기</h2>
+      <div class="preview-stage">
+        <div class="widget-shell" id="widgetShell" aria-label="먼작귀 업무시간 위젯">
+          <iframe id="widgetFrame" src="renderer/index.html" title="먼작귀 친구들의 정원"></iframe>
+        </div>
+      </div>
+    </section>
+    <section class="download-section" aria-label="Windows 설치 파일">
+      <div class="download-primary">
+        <a id="downloadButton" class="download-button" href="https://github.com/ajttk369/chiikawa-work-widget/releases/download/v1.0.1/chiikawa-work-widget-setup-1.0.1-x64.exe"><i data-lucide="download"></i><span>Windows 다운로드</span></a>
+        <p id="downloadStatus" role="status">Windows 64비트 · v1.0.1 · 113 MB</p>
+      </div>
+      <a class="release-link" id="releaseLink" href="https://github.com/ajttk369/chiikawa-work-widget/releases" target="_blank" rel="noopener noreferrer">배포 파일 보기<i data-lucide="external-link"></i></a>
+    </section>
+    <section class="install-guide" aria-labelledby="installHeading">
+      <h2 id="installHeading">설치하고 실행하기</h2>
+      <ol class="install-steps">
+        <li><strong>설치 파일 받기</strong><p>위의 Windows 다운로드 버튼으로 <code>.exe</code> 파일을 받아요.</p></li>
+        <li><strong>설치하기</strong><p>받은 파일을 더블클릭하고 설치를 완료해요.</p></li>
+        <li><strong>위젯 열기</strong><p>바탕화면 아이콘을 더블클릭해요. 아이콘이 없으면 시작 메뉴에서 <b>먼작귀</b>를 검색해 실행해요.</p></li>
+      </ol>
+      <div class="shortcut-guide">
+        <h3><i data-lucide="monitor"></i>바탕화면에 아이콘 두기</h3>
+        <ol>
+          <li>시작 메뉴에서 <b>먼작귀</b>를 검색해요.</li>
+          <li>앱을 우클릭하고 <b>파일 위치 열기</b>를 선택해요.</li>
+          <li>열린 폴더의 먼작귀 아이콘을 우클릭한 뒤 <b>추가 옵션 표시 → 보내기 → 바탕 화면에 바로 가기 만들기</b>를 선택해요.</li>
+        </ol>
+      </div>
+    </section>
+    <footer class="page-footer">Windows 64비트용 · 설치 후 인터넷 연결 없이 사용 가능 · 비공식 팬 프로젝트</footer>
   </main>
   <dialog id="settingsDialog" aria-label="먼작귀 설정">
     <button id="closeSettings" type="button" title="설정 닫기" aria-label="설정 닫기"><i data-lucide="x"></i></button>
